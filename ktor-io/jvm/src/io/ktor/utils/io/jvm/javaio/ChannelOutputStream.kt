@@ -18,7 +18,7 @@ public open class ChannelOutputStream(
     private val channel: ByteWriteChannel,
     coroutineContext: CoroutineContext = Dispatchers.IO,
 ): OutputStream() {
-    private val scope = CoroutineScope(coroutineContext + SupervisorJob())
+    private val scope = CoroutineScope(coroutineContext)
     private var buffer = Buffer()
     private val flushes = Channel<Buffer>(Channel.BUFFERED)
     private val flushJob = scope.launch {
@@ -28,7 +28,6 @@ public open class ChannelOutputStream(
                 channel.flush()
             }
         } catch (throwable: Throwable) {
-            channel.close(throwable)
             flushes.close(throwable)
         }
     }

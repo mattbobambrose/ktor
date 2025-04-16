@@ -11,6 +11,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
+import io.ktor.utils.io.ClosedByteChannelException
 import kotlinx.coroutines.*
 import java.util.concurrent.*
 import kotlin.test.*
@@ -39,9 +40,9 @@ class RespondWriteTest {
             }
         }
 
-        val response = client.get("/")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("", response.bodyAsText())
+        assertFailsWith<ClosedByteChannelException> {
+            client.get("/")
+        }
     }
 
     @Test
@@ -81,8 +82,8 @@ class RespondWriteTest {
             }
         }
 
-        val response = client.get("/")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("OK", response.bodyAsText())
+        assertFailsWith<ClosedByteChannelException> {
+            client.get("/")
+        }
     }
 }
